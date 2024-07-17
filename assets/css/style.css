@@ -1943,3 +1943,98 @@ section {
   text-align: center;
   font-size: 13px;
 }
+
+
+
+/*Last add for moussa web*/
+.containerp {
+  max-width: 600px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.containerp h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.containerp label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.containerp input[type="text"],
+input[type="email"],
+input[type="date"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 15px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.containerp input[type="radio"],
+input[type="checkbox"] {
+  margin-right: 1px;
+}
+
+.containerp input[type="submit"] {
+  width: 100%;
+  background-color: #4caf50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.containerp input[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+.time-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.time-slots input[type="radio"] {
+  display: none;
+}
+
+.time-slots label {
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  cursor: pointer;
+  width: 48%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.time-slots input[type="radio"]:checked + label {
+  background-color: #4caf50;
+  color: white;
+  border-color: #45a049;
+}
+
+.items_prise {
+  display: flex;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .time-slots label {
+    width: 100%;
+  }
+}
