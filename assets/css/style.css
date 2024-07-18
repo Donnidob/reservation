@@ -715,6 +715,56 @@ section {
   }
 }
 
+/* Section service */
+.title {
+  text-align: center;
+  background-color: #748cc4;
+  padding: 10px;
+}
+
+.Boite {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 30px;
+}
+
+.card {
+  width: 220px;
+  height: 220px;
+  display: inline-block;
+  border-radius: 10px;
+  text-align: center;
+  padding: 60px 20px;
+  margin: 3px;
+  color: #254180;
+  background-color: #e4f3f3;
+  transition: 0.3s;
+}
+
+.card:hover {
+  background-color: #618bad;
+  color: #fefffe;
+  transition: 0.4s;
+}
+
+.card img {
+  width: 50px;
+  height: 50px;
+}
+
+@media (max-width: 526px) {
+  .card {
+    width: 400px;
+  }
+
+  .Boite {
+    margin: 10px;
+  }
+}
+
+/*  */
 /*--------------------------------------------------------------
 # Featured Services
 --------------------------------------------------------------*/
@@ -1054,68 +1104,6 @@ section {
   min-height: 400px;
 }
 
-/*--------------------------------------------------------------
-# Services
---------------------------------------------------------------*/
-.services .icon-box {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.services .icon {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 250px;
-  height: 250px;
-  margin-bottom: 20px;
-  background: #fff;
-  transition: 0.5s;
-  color: #3fbbc0;
-  overflow: hidden;
-  box-shadow: 0px 0 25px rgba(0, 0, 0, 0.15);
-}
-
-.services .icon .img-serv1 {
-  width: 300px;
-}
-
-.services .icon-box:hover .icon {
-  box-shadow: 0px 0 25px rgba(63, 187, 192, 0.3);
-}
-
-.services .title {
-  font-weight: 600;
-  margin-bottom: 15px;
-  font-size: 18px;
-  position: relative;
-  padding-bottom: 15px;
-}
-
-.services .title a {
-  color: #444444;
-  transition: 0.3s;
-}
-
-.services .title a:hover {
-  color: #3fbbc0;
-}
-
-.services .title::after {
-  content: "";
-  position: absolute;
-  display: block;
-  width: 50px;
-  height: 2px;
-  background: #3fbbc0;
-  bottom: 0;
-  left: calc(50% - 25px);
-}
-
-.services .description {
-  line-height: 24px;
-  font-size: 14px;
-}
 
 /*--------------------------------------------------------------
 # Appointments
