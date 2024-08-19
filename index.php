@@ -8,7 +8,7 @@ $message = "";
 
 // Vérification si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
+
     // Vérifier que l'heure du rendez-vous est entre 7h et 12h
     $appointment_time = $_POST['appointment_time'];
     if ($appointment_time < "07:00" || $appointment_time > "12:00") {
@@ -19,15 +19,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $name = $_POST['name'];
         $gender = $_POST['gender'];
         $phone_number = $_POST['phone_number'];
-        $birthdate = $_POST['birth_year'] . '-' . $_POST['birth_month'] . '-' . $_POST['birth_day'];
+        $birth_year = $_POST['birth_year'];  
+        $birth_month = $_POST['birth_month'];
+        $birth_day = $_POST['birth_day'];
         $specialist = $_POST['specialist'];
         $symptoms = $_POST['symptoms'];
         $appointment_date = $_POST['appointment_date'];
         $appointment_time = $_POST['appointment_time'];
 
         // Préparation de la requête SQL pour l'insertion
-        $sql = "INSERT INTO users (appointment_for,name, gender, phone_number, birthdate, specialist, symptoms, appointment_date, appointment_time)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO users (appointment_for, name, gender, phone_number, birth_day, birth_month, birth_year, specialist, symptoms, appointment_date, appointment_time)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         // Préparation de la déclaration
         $stmt = $conn->prepare($sql);
@@ -35,13 +37,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Vérification si la préparation a réussi
         if ($stmt) {
             // Liaison des paramètres et exécution de la requête
-            $stmt->bind_param("sssssssss", $appointment_for, $name, $gender, $phone_number, $birthdate, $specialist, $symptoms, $appointment_date, $appointment_time);
+            $stmt->bind_param("sssssssssss", $appointment_for, $name, $gender, $phone_number, $birth_day, $birth_month, $birth_year, $specialist, $symptoms, $appointment_date, $appointment_time);
 
             // Exécution de la requête
             if ($stmt->execute()) {
                 $message = "Le rendez-vous a été pris avec succès.";
 
                 // Génération du QR Code avec les informations du rendez-vous
+                $birthdate = $birth_year . '-' . $birth_month . '-' . $birth_day;
                 $qr_content = "Rendez-vous pour: $appointment_for\nNom: $name\nSexe: $gender\nTéléphone: $phone_number\nDate de naissance: $birthdate\nSpécialiste: $specialist\nSymptômes: $symptoms\nDate du rendez-vous: $appointment_date\nHeure du rendez-vous: $appointment_time";
                 $qr_filename = "qrcodes/" . uniqid() . ".png";
                 QRcode::png($qr_content, $qr_filename, QR_ECLEVEL_L, 4);
@@ -63,6 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 
 
 
@@ -147,7 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <p>
                   Bienvenue sur notre plateforme de consultation en ligne, 
                   conçue pour simplifier votre accès aux soins. 
-                  Chez [Nom de l'entreprise], nous croyons en un service de santé accessible et efficace, 
+                  Au CHU POINT G, nous croyons en un service de santé accessible et efficace, 
                   sans les contraintes des longues attentes. Notre mission est de vous connecter facilement avec des professionnels qualifiés, 
                   pour des consultations rapides et en toute sécurité. Nous sommes dédiés à améliorer votre expérience médicale, 
                   tout en respectant vos besoins et votre temps précieux.
@@ -242,14 +246,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <option value="dec">Déc</option>
               </select>
               <select id="birth_day" name="birth_day" required>
-                <option value="" disabled>Année</option>
-                <?php
-                $current_year = date("Y");
-                $oldest_year = $current_year - 150;
-                for ($i = $current_year; $i >= $oldest_year; $i--) {
-                  echo "<option value=\"$i\">$i</option>";
-                }
-                ?>
+              <option value="" disabled>Mois</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="30">30</option>
+                <option value="31">31</option>
               </select>
             </div>
 

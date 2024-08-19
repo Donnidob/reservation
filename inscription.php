@@ -1,46 +1,56 @@
 <?php
 require_once 'connexiondb.php'; // Assurez-vous que ce fichier est correctement inclus
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nom = $_POST['nom'];
-    $prenom = $_POST['prenom'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $confirm_password = $_POST['confirm-password'];
+$error_message = '';
 
-    if ($password === $confirm_password) {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nom = htmlspecialchars($_POST['nom']);
+    $prenom = htmlspecialchars($_POST['prenom']);
+    $email = htmlspecialchars($_POST['email']);
+    $password = $_POST['password'];
+    $confirm_password = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : ''; // Added check
+
+    // Validation rapide
+    if (empty($nom) || empty($prenom) || empty($email) || empty($password) || empty($confirm_password)) {
+        $error_message = "Tous les champs sont obligatoires.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error_message = "L'adresse email n'est pas valide.";
+    } elseif ($password !== $confirm_password) {
+        $error_message = "Les mots de passe ne correspondent pas.";
+    } else {
         // Hacher le mot de passe
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         try {
-            // Insérer les données dans la base de données
-            $sql = "INSERT INTO utilisateurs (nom, prenom, email, password) VALUES (:nom, :prenom, :email, :password)";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([
-                'nom' => $nom, 
-                'prenom' => $prenom, 
-                'email' => $email, 
-                'password' => $hashed_password, 
-            ]);
-
-            // Redirection vers la page de connexion après une inscription réussie
-            header("Location: adminxx.php");
-            exit();
-        } catch (PDOException $e) {
-            echo "Erreur : " . $e->getMessage();
+            // Préparer l'insertion des données dans la base de données
+            $sql = "INSERT INTO utilisateurs (nom, prenom, email, password) VALUES (?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssss", $nom, $prenom, $email, $hashed_password);
+            
+            // Exécuter la requête
+            if ($stmt->execute()) {
+                // Redirection vers la page de connexion après une inscription réussie
+                header("Location: adminxx.php");
+                exit();
+            } else {
+                $error_message = "Erreur lors de l'inscription.";
+            }
+            
+            $stmt->close(); // Fermer la requête préparée
+        } catch (Exception $e) {
+            $error_message = "Erreur : " . $e->getMessage();
         }
-    } else {
-        $error_message = "Les mots de passe ne correspondent pas.";
     }
 }
+
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page d'Inscription</title>
+    <title>Inscription</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
@@ -70,8 +80,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             justify-content: center;
         }
         .form-container {
-            max-width: 300px;
-            width: 90%;
+            max-width: 400px;
+            width: 100%;
             background: rgba(255, 255, 255, 0.9);
             padding: 30px;
             border-radius: 10px;
@@ -97,10 +107,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
-        }
-        .form .form-check-label {
-            margin-left: 5px;
-            color: #333;
         }
         .form .btn {
             width: 100%;
@@ -134,46 +140,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
     </style>
 </head>
 <body>
     <div class="background"></div>
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
-        <form class="form bg-light p-4 rounded shadow" method="post" action="" enctype="multipart/form-data">
-            <h2 class="text-center mb-4">Inscription</h2>
-            <?php if (isset($error_message)): ?>
-                <div class="alert alert-danger" role="alert">
-                    <?= htmlspecialchars($error_message) ?>
+        <div class="form-container">
+            <form class="form bg-light p-4 rounded shadow" method="post" action="">
+                <h2 class="text-center mb-4">Inscription</h2>
+                <?php if (!empty($error_message)): ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?= htmlspecialchars($error_message) ?>
+                    </div>
+                <?php endif; ?>
+                <div class="form-group">
+                    <label for="nom">Nom</label>
+                    <input type="text" class="form-control" id="nom" name="nom" required>
                 </div>
-            <?php endif; ?>
-            <div class="form-group">
-                <label for="nom">Nom</label>
-                <input type="text" class="form-control" id="nom" name="nom" required>
-            </div>
-            <div class="form-group">
-                <label for="prenom">Prénom</label>
-                <input type="text" class="form-control" id="prenom" name="prenom" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Mot de passe</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <div class="form-group">
-                <label for="confirm-password">Confirmez le mot de passe</label>
-                <input type="password" class="form-control" id="confirm-password" name="confirm-password" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Inscription</button>
-        </form>
+                <div class="form-group">
+                    <label for="prenom">Prénom</label>
+                    <input type="text" class="form-control" id="prenom" name="prenom" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirmer le mot de passe</label>
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">S'inscrire</button>
+                <div class="text-center mt-3">
+                    Déjà inscrit ? <a href="adminxx.php">Connectez-vous</a>
+                </div>
+            </form>
+        </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
